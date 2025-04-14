@@ -5,7 +5,7 @@ from shutil import rmtree as remove_content_recursively_from
 
 from assertpy import assert_that
 
-from dal.extractor import dump_to_folder, resolve_path_to, refresh_storage
+from dal.storager import dump_to_folder, resolve_path_to, refresh_storage
 
 
 def create_dummy_json_file_inside(target_dir: Path, identifier: int) -> None:
