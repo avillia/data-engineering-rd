@@ -5,7 +5,7 @@ from requests import get as run_get_request
 
 def get_sales(date: Date, api_url: str, api_token: str) -> list[dict]:
     auth_headers = {
-        "Authorization": api_token
+        "Authorization": api_token,
     }
 
     response = run_get_request(

@@ -2,6 +2,7 @@ from shutil import rmtree as remove_content_recursively_from
 from json import dump as dump_json
 from pathlib import Path
 
+
 def resolve_path_to(storage_directory: str) -> Path:
     return Path(storage_directory).resolve()
 
@@ -18,7 +19,7 @@ def generate_new_filename(storage_directory: Path) -> Path:
 
 
 def store_data(file_path: Path, content: list[dict]) -> None:
-    with file_path.open('w', encoding='utf-8') as file:
+    with file_path.open("w", encoding="utf-8") as file:
         dump_json(content, file, ensure_ascii=False, indent=4)
 
 
