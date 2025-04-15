@@ -9,7 +9,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV PYTHONPATH=/app
 
 COPY . /app/lec02
-EXPOSE 8081
-CMD python /app/lec02/extractor_job.py
+COPY ./supervisord.conf /etc/supervisord.conf
+
+EXPOSE 8081 8082
+
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
 

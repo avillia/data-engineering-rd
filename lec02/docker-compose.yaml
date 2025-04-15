@@ -1,13 +1,14 @@
 version: '3.9'
 
 services:
-  job1:
+  job_runner:
     build:
       context: .
     environment:
       API_AUTH_TOKEN: ${API_AUTH_TOKEN}
     ports:
       - "8081:8081"
+      - "8082:8082"
   tests:
     build:
       context: .
