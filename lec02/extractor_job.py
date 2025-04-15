@@ -1,8 +1,9 @@
+import traceback
 from datetime import datetime
 from os import getenv
 
 from flask import Flask, jsonify, request, Response
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, JSONDecodeError
 
 from bll.extractor import fetch_sales_api
 
@@ -47,12 +48,24 @@ def fetch_data_from_sales_API():
         ), 400
 
     try:
-        fetch_sales_api(date, API_URL, AUTH_TOKEN, raw_dir)
+        result_dir_path = fetch_sales_api(date, API_URL, AUTH_TOKEN, raw_dir)
+        return jsonify(
+            {
+                "status": "OK",
+                "result_dir_path": result_dir_path,
+            }
+        ), 201
     except HTTPError as exception:
-        return generate_error_json(f"Error on the sales API side: {exception}"), 503
+        return generate_error_json(
+            f"Error on the sales API side: {traceback.format_exception(exception)}",
+        ), 503
+    except JSONDecodeError:
+        return generate_error_json(
+            f"Mangled response from upstream service!",
+        ), 503
     except OSError as exception:
         return generate_error_json(
-            f"Error while trying to save results: {exception}"
+            f"Error while trying to save results: {traceback.format_exception(exception)}",
         ), 500
 
 
