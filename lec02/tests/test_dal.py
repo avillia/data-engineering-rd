@@ -3,22 +3,20 @@ from pathlib import Path
 from shutil import rmtree as remove_content_recursively_from
 
 from assertpy import assert_that
-from fastavro import reader, writer
+from fastavro import reader
 from pytest import fixture
 
-from dal.storager import (
-    dump_to_folder,
-    resolve_path_to,
+from lec02.dal.storager import (
+    dump_to_raw_folder,
+    dump_to_stg_folder,
     refresh_storage,
-    write_as_avro,
-    write_as_json,
 )
 
 
 @fixture
 def temporary_storage():
-    test_storage: Path = resolve_path_to("../test_storage")
-    test_storage.mkdir(parents=True, exist_ok=True)
+    test_storage = Path("../test_storage").resolve()
+    test_storage.mkdir(parents=True)
     yield test_storage
 
     ...
@@ -70,7 +68,7 @@ def test_json_file_is_created_correctly(temporary_storage: Path):
     ]
     raw_dir = temporary_storage / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
-    storage = dump_to_folder(write_as_json, fake_data, str(raw_dir))
+    storage = dump_to_raw_folder(fake_data, str(raw_dir), "2022-08-09")
 
     assert_that(storage).is_not_empty()
     assert_that(storage).is_file()
@@ -83,33 +81,25 @@ def test_json_file_is_created_correctly(temporary_storage: Path):
 def test_avro_file_is_created_correctly(temporary_storage: Path):
     fake_data = [
         {
-            "client": "Michael Wilkerson",
-            "purchase_date": "2022-08-09",
             "product": "Vacuum cleaner",
             "price": 346,
         },
         {
-            "client": "Russell Hill",
-            "purchase_date": "2022-08-09",
             "product": "Microwave oven",
             "price": 446,
         },
         {
-            "client": "Michael Galloway",
-            "purchase_date": "2022-08-09",
             "product": "Phone",
             "price": 1042,
         },
     ]
 
     schema = {
-        "doc": "Test sales data.",
-        "name": "Sales",
+        "doc": "Test product data.",
+        "name": "product",
         "namespace": "test",
         "type": "record",
         "fields": [
-            {"name": "client", "type": "string"},
-            {"name": "purchase_date", "type": "date"},
             {"name": "product", "type": "string"},
             {"name": "price", "type": "int"},
         ],
@@ -117,11 +107,11 @@ def test_avro_file_is_created_correctly(temporary_storage: Path):
 
     stg_dir = temporary_storage / "raw"
     stg_dir.mkdir(parents=True, exist_ok=True)
-    storage = dump_to_folder(write_as_avro, fake_data, str(stg_dir))
+    storage = dump_to_stg_folder(fake_data, str(stg_dir), "2022-08-09", schema)
 
     assert_that(storage).is_not_empty()
     assert_that(storage).is_file()
 
-    with open(storage, "r", encoding="utf-8") as file:
+    with open(storage, "rb") as file:
         written_data = reader(file)
-        assert_that(written_data).is_equal_to(fake_data)
+        assert_that(list(written_data)).is_equal_to(fake_data)
