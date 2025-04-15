@@ -1,12 +1,15 @@
 FROM python:3.12-slim
 LABEL authors="Illia Avdiienko"
 
-WORKDIR /app
+WORKDIR /app/lec02
 COPY requirements.txt .
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+ENV PYTHONPATH=/app
+
+COPY . /app/lec02
 EXPOSE 8081
-CMD python extractor_job.py
+CMD python /app/lec02/extractor_job.py
 
 

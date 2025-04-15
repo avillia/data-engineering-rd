@@ -1,13 +1,13 @@
 FROM python:3.12-slim
 LABEL authors="Illia Avdiienko"
 
-WORKDIR /app
+WORKDIR /app/lec02
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+ENV PYTHONPATH=/app
 
-ENV PYTHONPATH=/app/lec02
+COPY . /app/lec02
 
 CMD python -m pytest
