@@ -20,10 +20,10 @@ def refresh_storage(storage_directory: Path) -> None:
     storage_directory.mkdir(parents=True, exist_ok=True)
 
 
-def generate_new_filename(storage_directory: Path, date: str, file_format: str) -> Path:
+def generate_new_subfolder(storage_directory: Path, date: str, file_format: str) -> Path:
     date_directory = storage_directory / date
     date_directory.mkdir(parents=True, exist_ok=True)
-    filename = f"sales_{date}.{file_format}"
+    filename = f"{storage_directory.name}_{date}.{file_format}"
     return storage_directory / date / filename
 
 
@@ -38,20 +38,8 @@ def store_data_as_avro(file_path: Path, content: list[dict], schema: dict) -> No
         writer(file, parsed_schema, content)
 
 
-def dump_to_stg_folder(
-    content: list[dict],
-    storage_directory: str,
-    subdirectory: str,
-    date: str,
-    schema: dict,
-) -> str:
-    storage_path = locate_storage(storage_directory, "stg", subdirectory)
-    refresh_storage(storage_path)
-    file_path = generate_new_filename(storage_path, date, "avro")
-
-    store_data_as_avro(file_path, content, schema)
-
-    return str(file_path)
+def provide_location_of_files_based_on(subdirectory_path: Path) -> str:
+    return str(subdirectory_path.parent.parent.resolve())
 
 
 def dump_to_raw_folder(
@@ -62,8 +50,24 @@ def dump_to_raw_folder(
 ) -> str:
     storage_path = locate_storage(storage_directory, "raw", subdirectory)
     refresh_storage(storage_path)
-    file_path = generate_new_filename(storage_path, date, "json")
+    file_path = generate_new_subfolder(storage_path, date, "json")
 
     store_data_as_json(file_path, content)
 
-    return str(file_path)
+    return provide_location_of_files_based_on(storage_path)
+
+
+def dump_to_stg_folder(
+    content: list[dict],
+    storage_directory: str,
+    subdirectory: str,
+    date: str,
+    schema: dict,
+) -> str:
+    storage_path = locate_storage(storage_directory, "stg", subdirectory)
+    refresh_storage(storage_path)
+    file_path = generate_new_subfolder(storage_path, date, "avro")
+
+    store_data_as_avro(file_path, content, schema)
+
+    return provide_location_of_files_based_on(storage_path)
