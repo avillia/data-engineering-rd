@@ -1,5 +1,5 @@
 from pytest import fixture
-from ..extractor_job import app
+from lec02.extractor_job import app
 
 from assertpy import assert_that
 
