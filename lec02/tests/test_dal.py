@@ -66,19 +66,18 @@ def test_json_file_is_created_correctly(temporary_storage: Path):
             "price": 1042,
         },
     ]
-    raw_dir = temporary_storage / "raw"
-    raw_dir.mkdir(parents=True, exist_ok=True)
     storage = dump_to_raw_folder(
         fake_data,
-        str(raw_dir),
+        temporary_storage,
         "test",
         "2022-08-09",
     )
 
-    assert_that(storage).is_not_empty()
-    assert_that(storage).is_file()
+    test_dump_file = Path(storage).resolve() / "raw" / "test" / "2022-08-09" / "test_2022-08-09.json"
 
-    with open(storage, "r", encoding="utf-8") as file:
+    assert_that(test_dump_file.is_file()).is_true()
+
+    with open(test_dump_file, "r", encoding="utf-8") as file:
         written_data = read_json_from(file)
         assert_that(written_data).is_equal_to(fake_data)
 
@@ -110,19 +109,18 @@ def test_avro_file_is_created_correctly(temporary_storage: Path):
         ],
     }
 
-    stg_dir = temporary_storage / "raw"
-    stg_dir.mkdir(parents=True, exist_ok=True)
     storage = dump_to_stg_folder(
         fake_data,
-        str(stg_dir),
+        str(temporary_storage),
         "test",
         "2022-08-09",
         schema,
     )
 
-    assert_that(storage).is_not_empty()
-    assert_that(storage).is_file()
+    test_dump_file = Path(storage).resolve() / "stg" / "test" / "2022-08-09" / "test_2022-08-09.avro"
 
-    with open(storage, "rb") as file:
+    assert_that(test_dump_file.is_file()).is_true()
+
+    with open(test_dump_file, "rb") as file:
         written_data = reader(file)
         assert_that(list(written_data)).is_equal_to(fake_data)
