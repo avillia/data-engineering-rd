@@ -5,9 +5,9 @@ from pathlib import Path
 from fastavro import writer, parse_schema
 
 
-def resolve_path_to(storage_directory: str, storage_type: str) -> Path:
+def locate_storage(storage_directory: str, storage_type: str, subdirectory_name: str) -> Path:
     file_storage = Path(storage_directory).resolve()
-    return file_storage / storage_type
+    return file_storage / storage_type / subdirectory_name
 
 
 def refresh_storage(storage_directory: Path) -> None:
@@ -17,8 +17,10 @@ def refresh_storage(storage_directory: Path) -> None:
 
 
 def generate_new_filename(storage_directory: Path, date: str, file_format: str) -> Path:
+    date_directory = storage_directory / date
+    date_directory.mkdir(parents=True, exist_ok=True)
     filename = f"sales_{date}.{file_format}"
-    return storage_directory / filename
+    return storage_directory / date / filename
 
 
 def store_data_as_json(file_path: Path, content: list[dict]) -> None:
@@ -37,8 +39,9 @@ def dump_to_stg_folder(
     storage_directory: str,
     date: str,
     schema: dict,
+    subdirectory_name: str
 ) -> str:
-    storage_path = resolve_path_to(storage_directory, "stg")
+    storage_path = locate_storage(storage_directory, "stg", subdirectory_name)
     refresh_storage(storage_path)
     file_path = generate_new_filename(storage_path, date, "avro")
 
@@ -51,8 +54,9 @@ def dump_to_raw_folder(
     content: list[dict],
     storage_directory: str,
     date: str,
+    subdirectory_name: str
 ) -> str:
-    storage_path = resolve_path_to(storage_directory, "raw")
+    storage_path = locate_storage(storage_directory, "raw", subdirectory_name)
     refresh_storage(storage_path)
     file_path = generate_new_filename(storage_path, date, "json")
 
