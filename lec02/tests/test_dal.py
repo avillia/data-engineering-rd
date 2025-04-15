@@ -68,7 +68,12 @@ def test_json_file_is_created_correctly(temporary_storage: Path):
     ]
     raw_dir = temporary_storage / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
-    storage = dump_to_raw_folder(fake_data, str(raw_dir), "2022-08-09")
+    storage = dump_to_raw_folder(
+        fake_data,
+        str(raw_dir),
+        "test",
+        "2022-08-09",
+    )
 
     assert_that(storage).is_not_empty()
     assert_that(storage).is_file()
@@ -107,7 +112,13 @@ def test_avro_file_is_created_correctly(temporary_storage: Path):
 
     stg_dir = temporary_storage / "raw"
     stg_dir.mkdir(parents=True, exist_ok=True)
-    storage = dump_to_stg_folder(fake_data, str(stg_dir), "2022-08-09", schema)
+    storage = dump_to_stg_folder(
+        fake_data,
+        str(stg_dir),
+        "test",
+        "2022-08-09",
+        schema,
+    )
 
     assert_that(storage).is_not_empty()
     assert_that(storage).is_file()

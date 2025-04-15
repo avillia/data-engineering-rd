@@ -5,9 +5,13 @@ from pathlib import Path
 from fastavro import writer, parse_schema
 
 
-def locate_storage(storage_directory: str, storage_type: str, subdirectory_name: str) -> Path:
+def locate_storage(
+    storage_directory: str,
+    raw_or_stg: str,
+    subdirectory: str,
+) -> Path:
     file_storage = Path(storage_directory).resolve()
-    return file_storage / storage_type / subdirectory_name
+    return file_storage / raw_or_stg / subdirectory
 
 
 def refresh_storage(storage_directory: Path) -> None:
@@ -37,11 +41,11 @@ def store_data_as_avro(file_path: Path, content: list[dict], schema: dict) -> No
 def dump_to_stg_folder(
     content: list[dict],
     storage_directory: str,
+    subdirectory: str,
     date: str,
     schema: dict,
-    subdirectory_name: str
 ) -> str:
-    storage_path = locate_storage(storage_directory, "stg", subdirectory_name)
+    storage_path = locate_storage(storage_directory, "stg", subdirectory)
     refresh_storage(storage_path)
     file_path = generate_new_filename(storage_path, date, "avro")
 
@@ -53,10 +57,10 @@ def dump_to_stg_folder(
 def dump_to_raw_folder(
     content: list[dict],
     storage_directory: str,
+    subdirectory: str,
     date: str,
-    subdirectory_name: str
 ) -> str:
-    storage_path = locate_storage(storage_directory, "raw", subdirectory_name)
+    storage_path = locate_storage(storage_directory, "raw", subdirectory)
     refresh_storage(storage_path)
     file_path = generate_new_filename(storage_path, date, "json")
 

@@ -15,7 +15,7 @@ def fetch_sales_api(date: Date, api_url: str, api_token: str, file_storage: str)
     file_name = dump_to_raw_folder(
         data,
         file_storage,
-        date_as_str,
         endpoint,
+        date_as_str,
     )
     return file_name
