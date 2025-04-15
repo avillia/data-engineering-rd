@@ -26,4 +26,7 @@ def get_sales(date: str, api_url: str, api_token: str) -> list[dict]:
         if response.status_code == 404:
             still_something_to_fetch = False
 
+    if not sales_data:
+        raise ValueError(f"Nothing found in the source API for the requested {date=}!")
+
     return sales_data
