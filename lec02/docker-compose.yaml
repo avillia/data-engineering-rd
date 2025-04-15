@@ -11,6 +11,6 @@ services:
   tests:
     build:
       context: .
-      dockerfile: tests/Dockerfile
+      dockerfile: tests.Dockerfile
     environment:
       API_AUTH_TOKEN: "test token since we do not perform requests to real data anyway"
