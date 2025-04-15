@@ -3,10 +3,9 @@ from datetime import datetime
 from os import getenv
 
 from flask import Flask, jsonify, request, Response
-from requests.exceptions import HTTPError, JSONDecodeError
+from requests.exceptions import HTTPError
 
-from bll.extractor import fetch_sales_api
-
+from lec02.bll.extractor import fetch_sales_api
 
 AUTH_TOKEN = getenv("API_AUTH_TOKEN")
 API_URL = "https://fake-api-vycpfa6oca-uc.a.run.app/"
@@ -55,13 +54,11 @@ def fetch_data_from_sales_API():
                 "result_dir_path": result_dir_path,
             }
         ), 201
+    except ValueError as exception:
+        return generate_error_json(str(exception)), 404
     except HTTPError as exception:
         return generate_error_json(
             f"Error on the sales API side: {traceback.format_exception(exception)}",
-        ), 503
-    except JSONDecodeError:
-        return generate_error_json(
-            f"Mangled response from upstream service!",
         ), 503
     except OSError as exception:
         return generate_error_json(
