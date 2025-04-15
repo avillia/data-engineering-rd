@@ -64,7 +64,3 @@ def fetch_data_from_sales_API():
         return generate_error_json(
             f"Error while trying to save results: {traceback.format_exception(exception)}",
         ), 500
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8081)
