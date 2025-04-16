@@ -5,7 +5,12 @@ from pathlib import Path
 from fastavro import writer, parse_schema
 
 
-def resolve_storage_path(storage_directory: str, raw_or_stg: str, subdirectory: str, date: str) -> Path:
+def resolve_storage_path(
+    storage_directory: str,
+    raw_or_stg: str,
+    subdirectory: str,
+    date: str,
+) -> Path:
     file_storage = Path(storage_directory).resolve()
     if raw_or_stg in storage_directory and subdirectory in storage_directory:
         return file_storage
