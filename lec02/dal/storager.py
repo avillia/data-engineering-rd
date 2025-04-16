@@ -5,13 +5,11 @@ from pathlib import Path
 from fastavro import writer, parse_schema
 
 
-def locate_storage(
-    storage_directory: str,
-    raw_or_stg: str,
-    subdirectory: str,
-) -> Path:
+def resolve_storage_path(storage_directory: str, raw_or_stg: str, subdirectory: str, date: str) -> Path:
     file_storage = Path(storage_directory).resolve()
-    return file_storage / raw_or_stg / subdirectory
+    if raw_or_stg in storage_directory and subdirectory in storage_directory:
+        return file_storage
+    return file_storage / raw_or_stg / subdirectory / date
 
 
 def refresh_storage(storage_directory: Path) -> None:
@@ -20,11 +18,9 @@ def refresh_storage(storage_directory: Path) -> None:
     storage_directory.mkdir(parents=True, exist_ok=True)
 
 
-def generate_new_subfolder(storage_directory: Path, date: str, file_format: str) -> Path:
-    date_directory = storage_directory / date
-    date_directory.mkdir(parents=True, exist_ok=True)
-    filename = f"{storage_directory.name}_{date}.{file_format}"
-    return storage_directory / date / filename
+def generate_new_file(storage_directory: Path, date: str, file_format: str) -> Path:
+    filename = f"{storage_directory.parent.name}_{date}.{file_format}"
+    return storage_directory / filename
 
 
 def store_data_as_json(file_path: Path, content: list[dict]) -> None:
@@ -48,9 +44,9 @@ def dump_to_raw_folder(
     subdirectory: str,
     date: str,
 ) -> str:
-    storage_path = locate_storage(storage_directory, "raw", subdirectory)
+    storage_path = resolve_storage_path(storage_directory, "raw", subdirectory, date)
     refresh_storage(storage_path)
-    file_path = generate_new_subfolder(storage_path, date, "json")
+    file_path = generate_new_file(storage_path, date, "json")
 
     store_data_as_json(file_path, content)
 
@@ -64,9 +60,9 @@ def dump_to_stg_folder(
     date: str,
     schema: dict,
 ) -> str:
-    storage_path = locate_storage(storage_directory, "stg", subdirectory)
+    storage_path = resolve_storage_path(storage_directory, "stg", subdirectory, date)
     refresh_storage(storage_path)
-    file_path = generate_new_subfolder(storage_path, date, "avro")
+    file_path = generate_new_file(storage_path, date, "avro")
 
     store_data_as_avro(file_path, content, schema)
 

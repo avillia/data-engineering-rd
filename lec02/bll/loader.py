@@ -20,13 +20,14 @@ SCHEMA = {
 def convert_data_to_stg_format(raw_dir: str, stg_dir: str) -> str:
     data_per_date = read_raw_files_from(raw_dir, "sales")
     if not data_per_date:
-        raise ValueError("Nothing to convert, raw directory is empty!")
+        raise ValueError(f"Nothing to convert, '{raw_dir}' directory is empty!")
 
     for date in data_per_date:
         json_contents = data_per_date[date]
-        avro_contents = convert_json_to_avro(json_contents)
+        convert_json_to_avro(json_contents)
+
         file_storage = dump_to_stg_folder(
-            avro_contents,
+            json_contents,
             stg_dir,
             "sales",
             date,
