@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  job_runner:
+    build:
+      context: .
+    environment:
+      API_AUTH_TOKEN: ${API_AUTH_TOKEN}
+    ports:
+      - "8081:8081"
+      - "8082:8082"
+  tests:
+    build:
+      context: .
+      dockerfile: tests.Dockerfile
+    environment:
+      API_AUTH_TOKEN: "test token since we do not perform requests to real data anyway"
