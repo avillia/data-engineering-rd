@@ -15,7 +15,7 @@ from lec02.dal.storager import (
 
 @fixture
 def temporary_storage():
-    test_storage = Path("../test_storage").resolve()
+    test_storage = Path("/test_storage").resolve()
     test_storage.mkdir(parents=True)
     yield test_storage
 
@@ -68,12 +68,14 @@ def test_json_file_is_created_correctly(temporary_storage: Path):
     ]
     storage = dump_to_raw_folder(
         fake_data,
-        temporary_storage,
+        "/test_storage",
         "test",
         "2022-08-09",
     )
 
-    test_dump_file = Path(storage).resolve() / "raw" / "test" / "2022-08-09" / "test_2022-08-09.json"
+    test_dump_file = (
+        Path(storage).resolve() / "test" / "2022-08-09" / "test_2022-08-09.json"
+    )
 
     assert_that(test_dump_file.is_file()).is_true()
 
@@ -111,13 +113,15 @@ def test_avro_file_is_created_correctly(temporary_storage: Path):
 
     storage = dump_to_stg_folder(
         fake_data,
-        str(temporary_storage),
+        "/test_storage",
         "test",
         "2022-08-09",
         schema,
     )
 
-    test_dump_file = Path(storage).resolve() / "stg" / "test" / "2022-08-09" / "test_2022-08-09.avro"
+    test_dump_file = (
+        Path(storage).resolve() / "test" / "2022-08-09" / "test_2022-08-09.avro"
+    )
 
     assert_that(test_dump_file.is_file()).is_true()
 

@@ -58,9 +58,7 @@ def test_no_raw_directory(test_job2):
         json={
             "raw_dir": "/some/none/existing/path",
             "stg_dir": "/yet/another/none/existing/path",
-        }
+        },
     )
     assert_that(response.status_code).is_equal_to(404)
-    assert_that(response.json["error"]).contains(
-        "directory not found at:"
-    )
+    assert_that(response.json["error"]).contains("directory not found at:")
