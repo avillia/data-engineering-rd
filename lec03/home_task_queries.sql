@@ -62,10 +62,10 @@ LIMIT 1;
 
 SELECT
     film.title
-FROM inventory
-RIGHT JOIN film ON film.film_id = inventory.film_id
+FROM film
+LEFT JOIN inventory ON film.film_id = inventory.film_id
 WHERE inventory.film_id IS NULL
-GROUP BY film.film_id;
+ORDER BY film.title;
 
 /*
 5.
