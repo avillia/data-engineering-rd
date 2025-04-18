@@ -71,4 +71,15 @@ GROUP BY film.film_id;
 5.
 Вивести топ 3 актори, які найбільше зʼявлялись в категорії фільмів “Children”.
 */
--- SQL code goes here...
+SELECT
+    actor.first_name,
+    actor.last_name,
+    COUNT(film_actor.film_id) as film_starred_at
+FROM film_actor
+JOIN actor ON film_actor.actor_id = actor.actor_id
+JOIN film_category ON film_category.film_id = film_actor.film_id
+JOIN category on category.category_id = film_category.category_id
+WHERE category.name = 'Children'
+GROUP BY actor.actor_id
+ORDER BY film_starred_at DESC
+LIMIT 3;
