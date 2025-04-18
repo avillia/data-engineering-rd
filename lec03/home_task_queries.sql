@@ -59,8 +59,13 @@ LIMIT 1;
 Вивести назви фільмів, яких не має в inventory.
 Запит має бути без оператора IN
 */
--- SQL code goes here...
 
+SELECT
+    film.title
+FROM inventory
+RIGHT JOIN film ON film.film_id = inventory.film_id
+WHERE inventory.film_id IS NULL
+GROUP BY film.film_id;
 
 /*
 5.
