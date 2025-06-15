@@ -18,9 +18,9 @@ services:
     env_file:
       - ./spark-base/.env.spark
     ports:
-      - '8080:8080' # Spark master Web UI
-      - '7077:7077' # For spark-node-to-spark-node queries
-      - '4040:4040' # Spark worker data
+      - "8080:8080" # Spark master Web UI
+      - "7077:7077" # For spark-node-to-spark-node queries
+      - "4040:4040" # Spark worker data
       - "8889:8889" # JupyterLab
     networks:
       - spark
@@ -28,7 +28,7 @@ services:
   spark-history-server:
     container_name: spark-history
     image: spark-image
-    entrypoint: ['/opt/spark/entrypoint.sh', 'history']
+    entrypoint: ["/opt/spark/entrypoint.sh", "history"]
     depends_on:
       - spark-master
     env_file:
@@ -39,14 +39,13 @@ services:
       - ./data:/opt/workspace/data
       - ./spark-logs:/opt/spark/spark-events
     ports:
-      - '18080:18080'
+      - "18080:18080"
     networks:
       - spark
 
   spark-worker:
-    container_name: spark-worker
     image: spark-image
-    entrypoint: ['/opt/spark/entrypoint.sh', 'worker']
+    entrypoint: [ "/opt/spark/entrypoint.sh", "worker" ]
     depends_on:
       - spark-master
     env_file:
