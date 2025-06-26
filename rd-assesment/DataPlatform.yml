@@ -6,30 +6,30 @@ Parameters:
     Type: String
     Default: 'data-platform'
     Description: 'Name prefix for all resources'
-  
+
   RedshiftMasterUsername:
     Type: String
     Default: 'admin'
     Description: 'Redshift master username'
-  
+
   RedshiftMasterPassword:
     Type: String
     NoEcho: true
     MinLength: 8
     Description: 'Redshift master password (min 8 chars)'
-  
+
   AirflowAdminUsername:
     Type: String
     Default: 'admin'
     Description: 'Airflow admin username'
-  
+
   AirflowAdminPassword:
     Type: String
     NoEcho: true
     MinLength: 8
     Description: 'Airflow admin password (min 8 chars)'
-  
-  AirflowBucket:
+
+  AirflowBucketName:
     Type: String
     NoEcho: true
     MinLength: 8
@@ -159,7 +159,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${ProjectName}-private-rt'
-  
+
   PrivateRoute:
     Type: AWS::EC2::Route
     Properties:
@@ -274,7 +274,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - secretsmanager:* 
+                  - secretsmanager:*
                 Resource: '*'
 
   RedshiftGlueAccessRole:
@@ -309,7 +309,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - secretsmanager:* 
+                  - secretsmanager:*
                 Resource: '*'
 
   RedshiftServiceRole:
@@ -321,7 +321,7 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: 
+              Service:
                 - redshift.amazonaws.com
                 - redshift-serverless.amazonaws.com
             Action: sts:AssumeRole
@@ -352,7 +352,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - glue:*
-                Resource: 
+                Resource:
                   - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:catalog'
                   - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/awsdatacatalog'
                   - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/*'
@@ -567,7 +567,7 @@ Resources:
         Description: 'Connection to Redshift Serverless'
         ConnectionType: JDBC
         ConnectionProperties:
-          JDBC_CONNECTION_URL: !Sub 
+          JDBC_CONNECTION_URL: !Sub
             - 'jdbc:redshift://${RedshiftEndpoint}:5439/dev'
             - RedshiftEndpoint: !GetAtt RedshiftServerlessWorkgroup.Workgroup.Endpoint.Address
           USERNAME: !Ref RedshiftMasterUsername
@@ -576,7 +576,7 @@ Resources:
           SecurityGroupIdList:
             - !Ref GlueCrawlerSecurityGroup
           SubnetId: !Ref PrivateSubnet1
-  
+
   RedshiftConnectionAZ2:
     Type: AWS::Glue::Connection
     Properties:
@@ -586,7 +586,7 @@ Resources:
         Description: 'Connection to Redshift Serverless'
         ConnectionType: JDBC
         ConnectionProperties:
-          JDBC_CONNECTION_URL: !Sub 
+          JDBC_CONNECTION_URL: !Sub
             - 'jdbc:redshift://${RedshiftEndpoint}:5439/dev'
             - RedshiftEndpoint: !GetAtt RedshiftServerlessWorkgroup.Workgroup.Endpoint.Address
           USERNAME: !Ref RedshiftMasterUsername
@@ -595,7 +595,7 @@ Resources:
           SecurityGroupIdList:
             - !Ref GlueCrawlerSecurityGroup
           SubnetId: !Ref PrivateSubnet2
-  
+
   RedshiftConnectionAZ3:
     Type: AWS::Glue::Connection
     Properties:
@@ -605,7 +605,7 @@ Resources:
         Description: 'Connection to Redshift Serverless'
         ConnectionType: JDBC
         ConnectionProperties:
-          JDBC_CONNECTION_URL: !Sub 
+          JDBC_CONNECTION_URL: !Sub
             - 'jdbc:redshift://${RedshiftEndpoint}:5439/dev'
             - RedshiftEndpoint: !GetAtt RedshiftServerlessWorkgroup.Workgroup.Endpoint.Address
           USERNAME: !Ref RedshiftMasterUsername
@@ -930,7 +930,7 @@ Resources:
       SubnetId: !Ref PrivateSubnet3
       SecurityGroups:
         - !Ref EFSSecurityGroup
-  
+
   AirflowConfigEFS:
     Type: AWS::EFS::FileSystem
     Properties:
@@ -1177,7 +1177,7 @@ Resources:
     Properties:
       LogGroupName: !Sub '/aws/ecs/${ProjectName}-airflow'
       RetentionInDays: 14
-  
+
   DAGSyncLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
