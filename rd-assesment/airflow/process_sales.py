@@ -1,7 +1,8 @@
 from datetime import datetime
+
 from airflow import DAG
-from airflow.providers.amazon.aws.operators.glue import GlueJobOperator
 from airflow.providers.amazon.aws.hooks.glue_crawler import GlueCrawlerHook
+from airflow.providers.amazon.aws.operators.glue import GlueJobOperator
 from airflow.providers.standard.operators.python import PythonOperator
 
 
