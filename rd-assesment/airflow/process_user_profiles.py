@@ -16,24 +16,21 @@ default_args = {
     "start_date": datetime(2025, 1, 1),
 }
 
-AT_2_AM_UTC_MIDNIGHT = "0 2 * * *"
-
 with DAG(
-    "process_customers",
+    "process_user_profiles",
     default_args=default_args,
-    schedule=AT_2_AM_UTC_MIDNIGHT,
     catchup=False,
 ) as dag:
     run_crawler = PythonOperator(
-        task_id="run_customers_crawler",
+        task_id="run_user_profiles_crawler",
         python_callable=start_glue_crawler,
-        op_kwargs={"crawler_name": "customers_bronze_crawler"},
+        op_kwargs={"crawler_name": "user_profiles_bronze_crawler"},
     )
 
     glue_etl_job = GlueJobOperator(
-        task_id="bronze_to_silver_customers",
-        job_name="customers_bronze_to_silver",
-        script_location="s3://<DataLakeBucket>/scripts/customers.py",
+        task_id="bronze_to_silver_user_profiles",
+        job_name="user_profiles_bronze_to_silver",
+        script_location="s3://<DataLakeBucket>/scripts/user_profiles.py",
         region_name="us-east-1",
         iam_role_name="<GlueServiceRole>",
         script_args={"--BUCKET_NAME": "<DataLakeBucket>"},
