@@ -13,10 +13,12 @@ spark = glue_context.spark_session
 job = Job(glue_context)
 job.init(args["JOB_NAME"], args)
 
+
 bronze_df = glue_context.create_dynamic_frame.from_catalog(
     database="default",
     table_name="customers_bronze",
 ).toDF()
+
 
 silver_df = bronze_df.select(
     col("CustomerId").alias("client_id"),
@@ -26,6 +28,7 @@ silver_df = bronze_df.select(
     to_date(col("RegistrationDate"), "yyyy-MM-dd").alias("registration_date"),
     col("State").alias("state"),
 ).dropDuplicates(["client_id"])
+
 
 output_path = f"s3://{args['BUCKET_NAME']}/silver/customers/"
 silver_df.write.mode("overwrite").parquet(output_path)

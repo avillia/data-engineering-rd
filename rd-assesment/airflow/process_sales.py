@@ -33,7 +33,7 @@ with DAG(
     glue_etl_job = GlueJobOperator(
         task_id="bronze_to_silver",
         job_name="sales_bronze_to_silver",
-        script_location="s3://<DataLakeBucket>/scripts/glue_sales_etl.py",
+        script_location="s3://<DataLakeBucket>/scripts/sales.py",
         region_name="us-east-1",
         iam_role_name="<GlueServiceRole>",
         script_args={"--BUCKET_NAME": "<DataLakeBucket>"},
